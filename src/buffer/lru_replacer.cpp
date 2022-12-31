@@ -16,17 +16,15 @@ namespace bustub {
 
 LRUReplacer::LRUReplacer(size_t num_pages) {
     this->capacity = num_pages;
-    this->count = 0;
 }
 
 LRUReplacer::~LRUReplacer() = default;
 
 auto LRUReplacer::Victim(frame_id_t *frame_id) -> bool {
-    if(lru.size() == 0)
+    if(lru.empty())
         return false;
     *frame_id = *lru.begin();
     lru.pop_front();
-    this->count--;
     return true;
 }
 
@@ -36,10 +34,8 @@ void LRUReplacer::Pin(frame_id_t frame_id) {
         if(*it == frame_id)
             break;
     }
-    if(it != lru.end()){
+    if(it != lru.end())
         lru.erase(it);
-        this->count--;
-    }
 }
 
 void LRUReplacer::Unpin(frame_id_t frame_id) {
@@ -47,8 +43,7 @@ void LRUReplacer::Unpin(frame_id_t frame_id) {
         if(*it == frame_id)
             return;
     }
-    this->count++;
-    if(this->count > this->capacity)
+    if(lru.size() == this->capacity)
         lru.pop_front();
     lru.push_back(frame_id);
 }
